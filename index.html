@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+
+
+
+
+<body>
+<div class="continer">
+    <h1 class="title">Заполните форму для регистрации </h1>
+
+    <form id="registrationForm" class="formEvent" action="">
+        <div class="fio">
+            <div class="fio-item">
+                <p>Имя</p>
+                <input id="firstName" class="input-name" required type="text" placeholder="имя">
+            </div>
+            <div class="fio-item">
+                <p>Фамиля</p>
+                <input id="secondName" class="input-name" required type="text" placeholder="фамиля">
+            </div>
+            <div class="fio-item">
+                <p>Отчество</p>
+                <input id="thirdName" class="input-name" required type="text" placeholder="отчество">
+            </div>
+        </div>
+
+        <div class="other_data">
+            <div class="other_item">
+                <p>Резиденство</p>
+                <input id="countries" class="input-name" required type="text" placeholder="отчество">
+            </div>
+            <div class="other_item">
+                <p>ИНН</p>
+                <input id="inn" class="input-name" required type="text" placeholder="отчество">
+            </div>
+            <div class="other_item">
+                <p>Дата рождения</p>
+                <input id="date" class="input-name" required type="date" placeholder="отчество">
+            </div>
+        </div>
+
+        <div class="gmail-items">
+            <p>Почта</p>
+            <input id="email" class="gmail" required type="email">
+        </div>
+
+        <div class="phone-items">
+            <p>Сотовый телефон</p>
+            <input id="phone" class="gmail" required type="tel">
+        </div>
+
+        <div class="check-items">
+            <input id="check" class="check-box" type="checkbox" name="" >
+            <p>Я прочитал и согласен с вышесказанным</p>
+        </div>
+        <button id="btn" class="btn" type="submit" >
+            Зарегестрироваться
+        </button>
+    </form>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<style>
+* {
+    box-sizing: border-box ;
+}
+html, body, div,
+h1, h2, h3, h4, h5, h6, p,
+a,form
+ {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+}
+body{
+    line-height: 1;
+}
+a, button, input {
+    transition: 0.3s;
+}
+a, a:hover {
+    text-decoration: none;
+}
+.continer {
+    width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+.title {
+    font-family: Montserrat;
+    color: #389DDD;
+    font-size: 45px;
+    font-weight: bold;
+}
+.formEvent {
+    display: flex;
+    flex-wrap: wrap;
+    width: 630px;
+    height: 400px;
+}
+.fio,.other_data {
+    height: 250px;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+}
+.fio {
+    margin-right: 30px;
+}
+.fio-item,.other_item,.gmail-items,.phone-items {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    height: 70px;
+}
+.input-name {
+    font-size: 30px;
+    width:300px;
+    height: 50px;
+    border-radius: 5px;
+}
+.gmail {
+    font-size: 30px;
+    width:630px;
+    height: 50px;
+    border-radius: 5px;
+}
+.check-items {
+    display: flex;
+}
+.check-box {
+    border-radius: 50%;
+}
+.btn {
+    width: 367px;
+    height: 59px;
+    background: #389DDD;
+    border-radius: 5px;
+    font-family: Montserrat;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 20px;
+    line-height: 29px;
+    text-align: center;
+    color: #FFFFFF;
+}
+
+</style>
+
+<script>
+    const url = ""
+    document.getElementById("registrationForm").addEventListener("submit", async (e) => {
+        e.preventDefault()
+        console.log(registrationForm)
+        try{
+            const response = await fetch(url,{
+                method: 'POST',
+                body: JSON.stringify(data),
+                headers: {
+                    'Content-Type': 'application/json'
+                    }
+            })
+            const json = response.json()
+        }catch (error) {
+            console.error('Ошибка:', error);
+        }
+    })
+    
+
+
+</script>
+</body>
+
+    
+</html>
