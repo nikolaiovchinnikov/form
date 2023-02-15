@@ -12,25 +12,25 @@
 
 
 <body>
-<div class="continer">
+<div class="container">
     <h1 class="title">Заполните форму для регистрации </h1>
 
     <form id="registrationForm" class="formEvent" action="">
         <div class="main">
             <div class="main-item">
-                <p>Имя</p>
+                <label>Имя</label>
                 <input id="firstName" class="input" required type="text" >
             </div>
             <div class="main-item">
-                <p>Фамиля</p>
+                <label>Фамиля</label>
                 <input id="secondName" class="input" required type="text" >
             </div>
             <div class="main-item">
-                <p>Отчество</p>
+                <label>Отчество</label>
                 <input id="thirdName" class="input" type="text" >
             </div>
             <div class="main-item">
-                <p>ИНН</p>
+                <label>ИНН</label>
                 <input id="inn" class="input" required type="text" >
                 
             </div>
@@ -38,33 +38,33 @@
 
         <div class="main">
             <div class="main-item">
-                <p>Резиденство</p>
+                <label>Резиденство</label>
                 <input id="countries" class="input" required type="text" >
             </div>
             <div class="main-item">
-                <p>Пол</p>
-                <select id="dender" class="input" required  >
+                <label>Пол</label>
+                <select id="gender" class="input" required  >
                     <option value="Мужской">Мужской</option>
                     <option value="Женский">Женский</option>
                 </select>
             </div>
             <div class="main-item">
-                <p>Дата рождения</p>
+                <label>Дата рождения</label>
                 <input id="date" class="input" required type="date" >
             </div>
             <div class="main-item">
-                <p>Спортивный клуб(необязательно)</p>
+                <label>Спортивный клуб(необязательно)</label>
                 <input id="sportClub" class="input" type="text" >
             </div>
         </div>
         <div class="other_data">
             <div class="gmail-items">
-                <p>Почта</p>
+                <label>Почта</label>
                 <input id="email" class=" input big" required type="email">
             </div>
     
             <div class="phone-items">
-                <p>Сотовый телефон</p>
+                <label>Сотовый телефон</label>
                 <input id="phone" class=" input big" required type="tel">
             </div>
     
@@ -78,9 +78,13 @@
             </div>
             
         </div>
-        <button id="btn" class="btn" type="submit" >
-            Зарегестрироваться
-        </button>
+        <div class="box_btn">
+            <button id="btn" class="btn" type="submit" >
+                Зарегестрироваться
+            </button>
+            <div id="wall" class="wall"></div>
+        </div>
+        
     </form>
     
 </div>
@@ -121,7 +125,7 @@ a, button, input {
 a, a:hover {
     text-decoration: none;
 }
-.continer {
+.container {
     width: 1200px;
     margin: 0 auto;
     display: flex;
@@ -152,13 +156,11 @@ a, a:hover {
     margin-right: 30px;
 }
 .main-item,.gmail-items,.phone-items {
+    position: relative;
     display: flex;
     justify-content: space-between;
     flex-direction: column;
     height: 75px;
-}
-.main-item {
-    position: relative;
 }
 .other_data {
     height: 180px;
@@ -211,7 +213,16 @@ a, a:hover {
     line-height: 29px;
     text-align: center;
     color: #FFFFFF;
-    
+    opacity: 0.4;
+}
+.box_btn {
+    position: relative;
+}
+.wall {
+    position: absolute;
+    top: 0;
+    width: 367px;
+    height: 59px;
 }
 .success {
     display: flex;
@@ -234,14 +245,14 @@ a, a:hover {
 </style>
 
 <script>
-
-
-    const listCheckColor = [ "firstName", "secondName", "countries", "inn", "date", "email", "phone"]
+    const wallElem = document.getElementById ("wall")
+    const url = ""
+    const listCheckColor = [ "firstName", "secondName", "countries", "inn", "date", "email", "phone"];
     listCheckColor.forEach( element => {
         document.getElementById(element).addEventListener("click", (e) =>{
-            e.target.style.background = "#FEFAFA"
+            e.target.style.background = "#FEFAFA";
             document.querySelectorAll(".erorr").forEach( element => {
-                element.style.display = "none"
+                element.style.display = "none";
             })
         })
     });
@@ -283,21 +294,50 @@ a, a:hover {
 		return;
 	}
 
-
-
-    const url = ""
-    document.getElementById("registrationForm").addEventListener("submit", async (e) => {
-        e.preventDefault()
-        let formElement = e.target
-        console.log(formElement[3].parentNode)
-        const innCorected = validateIIN(formElement[3].value)
-        if (innCorected){
-            formElement[3].style.background = "#B70000"
-            formElement[3].insertAdjacentHTML("afterEnd", `<div class="erorr"><p>${innCorected}</p></div>`)
-        }else{
-            formElement.innerHTML = `<div class="success"><h1 class="text_success">Успешная регистрация!</h1></div>`
-
+    const validatePhone = (num) => {
+        for (let idx in num) {
+            if( idx === "0" && num[idx] === "+" ) {
+                continue;
+            }
+            if( isNaN(num[idx]) ) {
+                return 'поле не должно содержать букв';
+            }
         }
+        
+        return ;
+    }
+
+    document.getElementById("check").addEventListener('click', (e) => {
+        if( e.target.checked ) {
+            wallElem.style.display = "none"
+            document.getElementById("btn").style.opacity = 1
+        }else {
+            document.getElementById("btn").style.opacity = 0.4
+            wallElem.style.display = "block"
+        }
+    })
+
+        document.getElementById("registrationForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            let formElement = e.target;
+            const innCorected = validateIIN(formElement[3].value);
+            const phoneCorected = validatePhone(formElement[9].value);
+            console.log(phoneCorected );
+            if ( innCorected ) {
+                formElement[3].style.background = "#B70000";
+                formElement[3].insertAdjacentHTML("afterEnd", `<div class="erorr"><p>${innCorected}</p></div>`);
+            }
+            else if ( phoneCorected ) {
+                formElement[9].style.background = "#B70000";
+                formElement[9].insertAdjacentHTML("afterEnd", `<div class="erorr"><p>${phoneCorected}</p></div>`);
+            }
+            else {
+                formElement.innerHTML = `<div class="success"><h1 class="text_success">Успешная регистрация!</h1></div>`;
+            }
+
+            
+
+        
 
         // console.log (validateIIN(formElement[4].value))
         // console.log(formElement[4].value)
@@ -313,9 +353,7 @@ a, a:hover {
         // }catch (error) {
         //     console.error('Ошибка:', error);
         // }
-    })
-    
-
+        })
 
 </script>
 </body>
