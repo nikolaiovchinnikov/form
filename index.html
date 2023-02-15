@@ -16,54 +16,73 @@
     <h1 class="title">Заполните форму для регистрации </h1>
 
     <form id="registrationForm" class="formEvent" action="">
-        <div class="fio">
-            <div class="fio-item">
+        <div class="main">
+            <div class="main-item">
                 <p>Имя</p>
-                <input id="firstName" class="input-name" required type="text" placeholder="имя">
+                <input id="firstName" class="input" required type="text" >
             </div>
-            <div class="fio-item">
+            <div class="main-item">
                 <p>Фамиля</p>
-                <input id="secondName" class="input-name" required type="text" placeholder="фамиля">
+                <input id="secondName" class="input" required type="text" >
             </div>
-            <div class="fio-item">
+            <div class="main-item">
                 <p>Отчество</p>
-                <input id="thirdName" class="input-name" required type="text" placeholder="отчество">
+                <input id="thirdName" class="input" type="text" >
             </div>
-        </div>
-
-        <div class="other_data">
-            <div class="other_item">
-                <p>Резиденство</p>
-                <input id="countries" class="input-name" required type="text" placeholder="отчество">
-            </div>
-            <div class="other_item">
+            <div class="main-item">
                 <p>ИНН</p>
-                <input id="inn" class="input-name" required type="text" placeholder="отчество">
+                <input id="inn" class="input" required type="text" >
+                
             </div>
-            <div class="other_item">
+        </div>
+
+        <div class="main">
+            <div class="main-item">
+                <p>Резиденство</p>
+                <input id="countries" class="input" required type="text" >
+            </div>
+            <div class="main-item">
+                <p>Пол</p>
+                <select id="dender" class="input" required  >
+                    <option value="Мужской">Мужской</option>
+                    <option value="Женский">Женский</option>
+                </select>
+            </div>
+            <div class="main-item">
                 <p>Дата рождения</p>
-                <input id="date" class="input-name" required type="date" placeholder="отчество">
+                <input id="date" class="input" required type="date" >
+            </div>
+            <div class="main-item">
+                <p>Спортивный клуб(необязательно)</p>
+                <input id="sportClub" class="input" type="text" >
             </div>
         </div>
-
-        <div class="gmail-items">
-            <p>Почта</p>
-            <input id="email" class="gmail" required type="email">
+        <div class="other_data">
+            <div class="gmail-items">
+                <p>Почта</p>
+                <input id="email" class=" input big" required type="email">
+            </div>
+    
+            <div class="phone-items">
+                <p>Сотовый телефон</p>
+                <input id="phone" class=" input big" required type="tel">
+            </div>
+    
         </div>
-
-        <div class="phone-items">
-            <p>Сотовый телефон</p>
-            <input id="phone" class="gmail" required type="tel">
-        </div>
-
+        
         <div class="check-items">
-            <input id="check" class="check-box" type="checkbox" name="" >
-            <p>Я прочитал и согласен с вышесказанным</p>
+            <p>Настоящим, прошу Президиум ОО «Федерация альпинизма города Алматы» принять меня в члены федерации. Обязуюсь соблюдать требования устава и всех других документов, регламентирующих деятельность и функционирование ОО «Федерация альпинизма города Алматы», гарантирую своевременную и полную оплату вступительного, ежегодного членского взносов.</p>
+            <div class="check-box_item">
+                <input id="check" class="check-box" type="checkbox" name="" >
+                <p id="text_check" class="text_check">Я прочитал и согласен с вышесказанным</p>
+            </div>
+            
         </div>
         <button id="btn" class="btn" type="submit" >
             Зарегестрироваться
         </button>
     </form>
+    
 </div>
 
 
@@ -115,6 +134,7 @@ a, a:hover {
     color: #389DDD;
     font-size: 45px;
     font-weight: bold;
+    margin: 25px 0 25px 0;
 }
 .formEvent {
     display: flex;
@@ -122,38 +142,62 @@ a, a:hover {
     width: 630px;
     height: 400px;
 }
-.fio,.other_data {
-    height: 250px;
+.main {
+    height: 325px;
     display: flex;
     justify-content: space-between;
     flex-direction: column;
 }
-.fio {
+.main:first-child {
     margin-right: 30px;
 }
-.fio-item,.other_item,.gmail-items,.phone-items {
+.main-item,.gmail-items,.phone-items {
     display: flex;
     justify-content: space-between;
     flex-direction: column;
-    height: 70px;
+    height: 75px;
 }
-.input-name {
-    font-size: 30px;
+.main-item {
+    position: relative;
+}
+.other_data {
+    height: 180px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+}
+.input {
+    background: #FEFAFA;
+    border: 1px solid #D4D4D4;
+    box-sizing: border-box;
+    border-radius: 5px;
+    font-style: normal;
+    font-weight: normal;
+    color: #2D2D2D;
+    opacity: 0.8;
+    font-size: 20px;
     width:300px;
     height: 50px;
-    border-radius: 5px;
+    
 }
-.gmail {
-    font-size: 30px;
+.big {
     width:630px;
-    height: 50px;
-    border-radius: 5px;
 }
 .check-items {
     display: flex;
+    flex-direction: column;
+    margin: 25px 0 25px 0
 }
 .check-box {
-    border-radius: 50%;
+    margin-right: 25px;
+}
+.check-box_item {
+    display: flex;
+    margin-top: 25px;
+}
+.text_check {
+    color: #262626;
+    opacity: 0.5;
 }
 .btn {
     width: 367px;
@@ -167,27 +211,108 @@ a, a:hover {
     line-height: 29px;
     text-align: center;
     color: #FFFFFF;
+    
 }
+.success {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+}
+.text_success {
+    font-size: 50px;
+    color:#389DDD ;
+}
+.erorr {
+    color: brown;
+    top: 40px;
+    left: -247px;
+    position: absolute;
+    display: block;
+}
+
 
 </style>
 
 <script>
+
+
+    const listCheckColor = [ "firstName", "secondName", "countries", "inn", "date", "email", "phone"]
+    listCheckColor.forEach( element => {
+        document.getElementById(element).addEventListener("click", (e) =>{
+            e.target.style.background = "#FEFAFA"
+            document.querySelectorAll(".erorr").forEach( element => {
+                element.style.display = "none"
+            })
+        })
+    });
+
+    document.querySelector("#check").addEventListener("click", (event) => {
+        if( event.target.checked ) {
+             document.querySelector("#text_check").style.color = "#389DDD"
+             document.querySelector("#text_check").style.opacity = 1
+        }else {
+            document.querySelector("#text_check").style.color = "#2D2D2D"
+            document.querySelector("#text_check").style.opacity = 0.5
+        }
+    })
+
+
+    const validateIIN = (iin) => {
+		if (iin.length !== 12) {
+			return `ИИН должен состоять из 12 цифр`;
+		}
+
+		if (isNaN(iin)) {
+			return 'ИИН не должен содержать букв';
+		}
+
+		let weights = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+		let sum = 0;
+		for (let i = 0; i < 11; i++) {
+			sum += weights[i] * Number(iin[i]);
+		}
+
+		let controlNumber = sum % 11;
+		if (controlNumber === 10) {
+			controlNumber = 0;
+		}
+
+		if (controlNumber !== Number(iin[11])) {
+			return 'ИИН некорректный';
+		}
+		return;
+	}
+
+
+
     const url = ""
     document.getElementById("registrationForm").addEventListener("submit", async (e) => {
         e.preventDefault()
-        console.log(registrationForm)
-        try{
-            const response = await fetch(url,{
-                method: 'POST',
-                body: JSON.stringify(data),
-                headers: {
-                    'Content-Type': 'application/json'
-                    }
-            })
-            const json = response.json()
-        }catch (error) {
-            console.error('Ошибка:', error);
+        let formElement = e.target
+        console.log(formElement[3].parentNode)
+        const innCorected = validateIIN(formElement[3].value)
+        if (innCorected){
+            formElement[3].style.background = "#B70000"
+            formElement[3].insertAdjacentHTML("afterEnd", `<div class="erorr"><p>${innCorected}</p></div>`)
+        }else{
+            formElement.innerHTML = `<div class="success"><h1 class="text_success">Успешная регистрация!</h1></div>`
+
         }
+
+        // console.log (validateIIN(formElement[4].value))
+        // console.log(formElement[4].value)
+        // try{
+        //     const response = await fetch(url,{
+        //         method: 'POST',
+        //         body: JSON.stringify(data),
+        //         headers: {
+        //             'Content-Type': 'application/json'
+        //             }
+        //     })
+        //     const json = response.json()
+        // }catch (error) {
+        //     console.error('Ошибка:', error);
+        // }
     })
     
 
