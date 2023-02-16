@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+<link rel="stylesheet" href="css/breadcrumbs.css">
+
+<div class="container">
+
+    <div class="breadcrumbs">
+       <a class="Nextlink" href="./">Главная</a>
+       <a class="Nextlink" href="?c=federation&a=membership">Членство в ФАА</a>
+       <a class="Nextlink" href="">Регистрация на президиум</a>
+    </div>
+
+    <form id="innSearch" class="search_inn_form"  action="">
+        <div class="block_registered_true"></div>
+        <div class="input_button">
+            <div class="box_input_inn">
+                <label class="label" for="box__input-id">ИИН</label>
+                <input
+                    class="_input"
+                    type="text"
+                    name="iin"
+                    required=""
+                    id="iin-input"
+                    oninvalid="this.setCustomValidity('ИИН должен содержать 12 цифр')"
+                    oninput="this.setCustomValidity('')"
+                    pattern="\d{12}"
+                    />
+                <label id="erorr" class="error" for=""></label>
+            </div>
+            
+            <button class="submi_inn" id="find">Найти</button>
+        </div>
+        
+    </form>
+
+
+
+
+    <form id="regFormPres" class="form_REG" action="">
+        <div id="message">
+		</div>
+        <div class="reg-wrapper">
+            <div class="FIO-row">
+                <div class="box">
+                    <label class="label" for="box__input-id">ФИО</label>
+                    <input class="box__input" type="text" name="FIO" disabled id="fio-input"/>
+                </div>
+            </div>
+        <div class="choose-row">
+              <div class="box">
+                  <p class="box__text">Как вы будете участвовать?</p>
+                  <div style="display:flex; align-items:center;">
+                      <label class="label margin-right-15px" for="contactChoice2"
+                      >Лично</label
+                      >
+                      <label class="switch">
+                      <input
+                          type="checkbox"
+                          id="contactChoice2"
+                          name="choice"
+                          value="representative"
+                          required=""
+                      />
+                      <span class="slider round"></span>
+                      </label>
+                      <label class="label margin-right-15px" for="contactChoice2"
+                      >Через представителя</label
+                      >
+                  </div>
+            </div>
+          </div>
+          <div class="representative-row">
+            <div class="box">
+              <label class="label" for="representative"
+                >Выберите представителя</label
+              >
+              <select
+                disabled
+                form="enter"
+                class="box__input"
+                name="representative"
+                id="select-representative"
+                required=""
+              >
+                <option value="1">Вариант 1</option>
+                <option value="2">Вариант 2</option>
+                <option value="3">Вариант 3</option>
+              </select>
+            </div>
+          </div>
+          <div class="representative-row">
+            <button class="submit2" id="regSendBtn" form="enter">Зарегистрироваться</button>
+          </div>
+          </div>
+    </form>
+
+
+
+
+<script>
+
+
+
+    function validateIIN(iin) {
+		if (iin.length !== 12) {
+			return `ИИН должен состоять из 12 цифр`;
+		}
+
+		if (isNaN(iin)) {
+			return 'ИИН не должен содержать букв';
+		}
+
+		let weights = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+		let sum = 0;
+		for (let i = 0; i < 11; i++) {
+			sum += weights[i] * Number(iin[i]);
+		}
+
+		let controlNumber = sum % 11;
+		if (controlNumber === 10) {
+			controlNumber = 0;
+		}
+
+		if (controlNumber !== Number(iin[11])) {
+			return 'ИИН некорректный';
+		}
+
+		return;
+	}
+    async function getMember(iin) {
+        try {
+            const member = await fetch(`https://falp.kz/api/registration.php?Identification_Number=${iin}`).then(data => data.json())
+            console.log(member)
+            return member[0]
+        } catch {
+            
+        }
+	}
+
+
+
+    const iinBlock = document.querySelector('.search_inn_form');
+    const regBlock = document.querySelector('.form_REG');
+    const find = document.querySelector('#find');
+    const iinInput = document.querySelector('#iin-input');
+    const fioInput = document.querySelector('#fio-input');
+	let members = []
+	let currentMember
+    let personal = '<option value="">Лично</option>'
+	let repMembersStr = '<option value="" checked>Загрузка</option>'
+
+    find.addEventListener("click", async (e) => {
+        e.preventDefault()
+        const iin = iinInput.value
+        const resultValidateIIN = validateIIN(iin)
+		if(resultValidateIIN) {
+			document.querySelector("#erorr").style.display = "block";
+            document.querySelector("#erorr").innerText =`* ${resultValidateIIN}` 
+			return
+		}
+		try {
+			currentMember = await getMember(iin)
+			if(currentMember.member_id) {
+				const registrationFinish = document.querySelector('.block_registered_true');
+				registrationFinish.innerHTML = `<p class="text_if_registered_true">Здравствуйте ${currentMember.name}, вы уже зарегистрированы.</p>`
+				addStr = currentMember.rep_member_id ? `Представлять ваши интересы будет <b>${members.find(item => item.member_id == currentMember.rep_member_id)?.name}</b>` : `Личное пристутствие`;
+				registrationFinish.innerHTML += `<p>${addStr}</p><br/><p>Введите другой ИИН</p> `
+			}else{
+                fioInput.value = currentMember.name
+                iinBlock.style.display = "none"
+                regBlock.style.display = 'flex'
+            }
+			
+		} catch {
+			
+		}
+    })
+
+
+
+
+
+    
+
+
+    document.querySelector("#iin-input").addEventListener("invalid", function(event) {
+		event.target.nextElementSibling.style.display = "block";
+	});
+	document.querySelector("#iin-input").addEventListener("input", function(event) {
+		event.target.nextElementSibling.style.display = "none";
+	});
+	
+	const select = document.querySelector("#select-representative");
+	select.innerHTML = personal;
+
+
+	try {
+		fetch(`https://falp.kz/api/rep_members.php`).then(data => data.json())
+		.then(data => {
+			members = data
+			repMembersStr = members.sort((a, b) => a.name.localeCompare(b.name)).reduce((acc, item) => {
+				return acc += `<option value="${item.member_id}">${item.name}</option>`
+			}, '')
+		})
+	} catch(e) { 
+		console.log(e)
+	}
+
+
+	document.querySelector("#contactChoice2").addEventListener("change", function() {
+	select.disabled = !this.checked;
+	if (select.disabled) {
+		select.innerHTML = personal;
+	} else {
+		select.innerHTML = repMembersStr;
+	}
+	});
+
+	document.querySelector("#regSendBtn").addEventListener("click", function(e, data) {
+		try {
+			e.preventDefault();
+			console.log(currentMember)
+			console.log(select.value)
+			const body = {
+				"memberId": currentMember.id,
+				"representativeId": select.value || null
+			}
+			fetch(`https://falp.kz/api/registration.php`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				}, 
+				body: JSON.stringify(body)
+			}).then(data => data.json()).catch(e => {
+				console.log(e)
+			})
+			.then(data => {
+				document.querySelector("#message").innerHTML = '<p>Вы успешно зарегистрированы, зарегистрировать еще одного человека?</p>'
+				console.log(data)})
+				
+				iinBlock.classList.add('active')
+				regBlock.classList.remove('active')
+				iinInput.value = ''
+		} catch (error) {
+			iinBlock.classList.add('active')
+			regBlock.classList.remove('active')
+			document.querySelector("#message").innerHTML = '<p>Произошла неизвестная ошибка</p>'
+		}
+	});
+</script>
+
+
+
+
+
+
+
+
+<!-- 
+
+ <section class="regPresidium">
+ 	<div class="frame">
+    <div class="frame" style="padding-top: 20px;">
+		<div id="message">
+		</div>
+      <form id="enter" action="#">
+        <div class="IIN-row active">
+        </div>
+        <div class="reg-wrapper">
+          <div class="FIO-row">
+          <div class="box">
+            <label class="label" for="box__input-id">ФИО</label>
+            <input class="box__input" type="text" name="FIO" disabled id="fio-input"/>
+          </div>
+        </div>
+        <div class="choose-row">
+			<div class="box">
+				<p class="box__text">Как вы будете участвовать?</p>
+				<div style="display:flex; align-items:center;">
+					<label class="label margin-right-15px" for="contactChoice2"
+					>Лично</label
+					>
+					<label class="switch">
+					<input
+						type="checkbox"
+						id="contactChoice2"
+						name="choice"
+						value="representative"
+						required=""
+					/>
+					<span class="slider round"></span>
+					</label>
+					<label class="label margin-right-15px" for="contactChoice2"
+					>Через представителя</label
+					>
+				</div>
+          </div>
+        </div>
+        <div class="representative-row">
+          <div class="box">
+            <label class="label" for="representative"
+              >Выберите представителя</label
+            >
+            <select
+			  disabled
+              form="enter"
+              class="box__input"
+              name="representative"
+              id="select-representative"
+              required=""
+            >
+              <option value="1">Вариант 1</option>
+              <option value="2">Вариант 2</option>
+              <option value="3">Вариант 3</option>
+            </select>
+          </div>
+        </div>
+        <div class="representative-row">
+          <button class="submit2" id="regSendBtn" form="enter">Зарегистрироваться</button>
+        </div>
+        </div>
+        
+      </form>
+    </div>
+ 	</div>
+</div>
+ </section> -->
+
+<style>
+    .container {
+        max-width: 1200px;
+        margin: 0 auto ;
+    }
+    .breadcrumbs {
+        display: flex;
+        justify-content: center;
+        
+    }
+    .Nextlink {
+        margin-right: 20px;
+        font-size: 20px;
+    }
+    .search_inn_form {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        
+    }
+    .block_registered_true {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        height: 200px;
+        width: 100%;
+    }
+    .text_if_registered_true {
+        font-size: 20px;
+        text-align: center;
+    }
+    .input_button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .box_input_inn {
+        margin-right: 25px;
+        height: 100px;
+        display: flex;
+        flex-direction: column;
+    }
+    ._input{
+        
+        min-width: 25rem;
+        height: 60px;
+        background: #fefafa;
+        border: 0.0625rem solid #d4d4d4;
+        box-sizing: border-box;
+        border-radius: 0.3125rem;
+        font-family: "Montserrat", sans-serif;
+        font-style: normal;
+        font-weight: normal;
+        font-size: 1rem;
+        line-height: 134.09%;
+        color: #2d2d2d;
+        opacity: 0.8;
+        padding-left: 0.625rem;
+    }
+    .submi_inn {
+        min-width: 12.5rem;
+        height: 60px;
+        background: #389ddd;
+        border-radius: 0.3125rem;
+        font-family: "Roboto", sans-serif;
+        font-style: normal;
+        font-weight: bold;
+        font-size: 1rem;
+        line-height: 1.8125rem;
+        text-align: center;
+        color: #ffffff;
+        border-style: none;
+        padding: 0;
+    }
+    .error {
+        display: none;
+        color: red;
+        font-size: 10px;
+    }
+    @media screen and (max-width:680px){
+        .input_button {
+            flex-direction: column;
+        }
+        .box_input_inn {
+            margin: 0;
+        }
+        .Nextlink {
+            font-size:15px ;
+        }
+    }
+    @media screen and (max-width:410px){
+        .Nextlink {
+            font-size:10px ;
+        }
+        ._input {
+            min-width: 12.5rem;
+            width: 70vw;
+            text-align: center;
+        }
+        .submit2 {
+            width: 90vw;
+        }
+    }
+
+
+    .form_REG {
+        display: none;
+        flex-direction: column;
+        justify-content: center;
+        margin: 25px 0 25px 0;
+        align-items: center;
+    }
+    .FIO-row,.representative-row {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 20px;
+    }
+    .box {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    #message {
+        margin-bottom: 25px;
+    }
+    
+
+
+
+
+
+
+
+
+
+    .label {
+        font-family: "Montserrat", sans-serif;
+        font-style: normal;
+        font-weight: 500;
+        font-size: 1rem;
+        line-height: 134%;
+        color: #2d2d2d;
+    }
+
+
+
+    
+    .box__text {
+        font-family: "Montserrat", sans-serif;
+        font-style: normal;
+        font-weight: 500;
+        font-size: 1rem;
+        line-height: 134%;
+        color: #2d2d2d;
+        margin-top: 0;
+        margin-bottom: 0.75rem;
+    }
+    .submit2 {
+        min-width: 18.75rem;
+        height: 3.73125rem;
+        background: #389ddd;
+        border-radius: 0.3125rem;
+        font-family: "Roboto", sans-serif;
+        font-style: normal;
+        font-weight: bold;
+        font-size: 1rem;
+        line-height: 1.8125rem;
+        text-align: center;
+        color: #ffffff;
+        border-style: none;
+        padding: 0;
+    }
+    .submit1:hover,
+    .submit2:hover {
+        background: #167bbb;
+    }
+    option:hover {
+        background: #000;
+    }
+    .IIN-row {
+        align-items: flex-end;
+    }
+    .choose-row {
+    margin-bottom: 2em;
+    }
+    .margin-right-5px {
+    margin-right: 0.3125em;
+    }
+    .margin-right-15px {
+    margin-right: 0.9375em;
+    }
+    
+    .IIN-row {
+    display: none;
+    }
+    .IIN-row.active {
+    display: flex;
+    }
+    .reg-wrapper.active {
+        display: block;
+    }
+    
+    .error-message {
+        display: none;
+        color: red;
+        margin-top: 5px;
+        position: absolute;
+        bottom: -20px;
+    }
+    .box {
+        position: relative;
+    }
+    .switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 34px;
+    margin-right: 10px;
+    }
+
+    .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+    }
+
+    .slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+    }
+
+    input:checked + .slider {
+    background-color: #2196f3;
+    }
+
+    input:focus + .slider {
+    box-shadow: 0 0 1px #2196f3;
+    }
+
+    input:checked + .slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+    }
+
+    /* Rounded sliders */
+    .slider.round {
+    border-radius: 34px;
+    }
+
+    .slider.round:before {
+    border-radius: 50%;
+    }
+    
+    input[type="checkbox"] {
+        display: none;
+    }
+    #select-representative[disabled] {
+        color: gray;
+    }
+    
+    
+</style>
+
+</body>
+</html>
